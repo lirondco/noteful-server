@@ -5,8 +5,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
 const foldersRouter = require('./folders/folders-router')
-/* const usersRouter = require('./users/users-router')
-const commentsRouter = require('./comments/comments-router') */ //change with noteful file directories
+const notesRouter = require('./notes/notes-router')
+
 
 const app = express() 
 
@@ -19,8 +19,7 @@ app.use(helmet())
 app.use(cors())
 
 app.use('/folders', foldersRouter)
-/* app.use('/api/users', usersRouter)
-app.use('/api/comments', commentsRouter) */ // change for noteful
+app.use('/notes', notesRouter)
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')

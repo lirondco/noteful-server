@@ -11,7 +11,7 @@ const serializeNote = note => ({
   id: note.id,
   name: xss(note.name),
   modified: note.modified, 
-  folderId: note.folderId,
+  folderid: note.folderid,
   content: xss(note.content),
 })
 
@@ -26,7 +26,7 @@ notesRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { name, folderId, content } = req.body
+    const { name, folderid, content } = req.body
     const newNote = { name, content }
 
     for (const [key, value] of Object.entries(newNote))
@@ -35,7 +35,7 @@ notesRouter
           error: { message: `Missing '${key}' in request body` }
         })
     
-    newNote.folderId = folderId
+    newNote.folderid = folderid
     NotesService.insertNote(
       req.app.get('db'),
       newNote
@@ -56,24 +56,24 @@ notesRouter
       req.app.get('db'),
       req.params.note_id
     )
-      .then(article => {
-        if (!article) {
+      .then(note => {
+        if (!note) {
           return res.status(404).json({
-            error: { message: `Article doesn't exist` }
+            error: { message: `Note doesn't exist` }
           })
         }
-        res.article = article
+        res.note = note
         next()
       })
       .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeArticle(res.article))
+    res.json(serializeNote(res.note))
   })
   .delete((req, res, next) => {
-    ArticlesService.deleteArticle(
+    NotesService.deleteNote(
       req.app.get('db'),
-      req.params.article_id
+      req.params.note_id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -81,22 +81,22 @@ notesRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { title, content, style } = req.body
-    const articleToUpdate = { title, content, style }
+    const { name, content } = req.body
+    const noteToUpdate = { name, content }
 
-    const numberOfValues = Object.values(articleToUpdate).filter(Boolean).length
+    const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length
     if (numberOfValues === 0) {
       return res.status(400).json({
         error:{
-          message: `Request body must contain either 'title', 'style', or 'content'`
+          message: `Request body must contain a 'name' and a 'content'`
         }
       })
     }
 
-    ArticlesService.updateArticle(
+    NotesService.updateNote(
       req.app.get('db'),
-      req.params.article_id,
-      articleToUpdate
+      req.params.note_id,
+      noteToUpdate
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -104,4 +104,4 @@ notesRouter
       .catch(next)
   })
 
-module.exports = articlesRouter
+module.exports = notesRouter
