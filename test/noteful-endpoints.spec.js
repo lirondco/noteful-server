@@ -199,7 +199,7 @@ describe('Notes Endpoints', function() {
       const newNote = {
         name: 'Test new note',
         content: 'Test new note content...',
-        folderid: 2
+        folderId: 2
       }
       return supertest(app)
         .post('/notes')

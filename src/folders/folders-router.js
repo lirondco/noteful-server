@@ -47,11 +47,11 @@ foldersRouter
   })
 
 foldersRouter
-  .route('/:folder_id')
+  .route('/folder-id')
   .all((req, res, next) => {
     FoldersService.getById(
       req.app.get('db'),
-      req.params.folder_id
+      req.params.folder-id
     )
       .then(folder => {
         if (!folder) {
@@ -70,7 +70,7 @@ foldersRouter
   .delete((req, res, next) => {
     FoldersService.deleteFolder(
       req.app.get('db'),
-      req.params.folder_id
+      req.params.folder-id
     )
       .then(numRowsAffected => {
         res.status(204).end()
@@ -91,7 +91,7 @@ foldersRouter
 
     FoldersService.updateFolder(
       req.app.get('db'),
-      req.params.folder_id,
+      req.params.folder-id,
       folderToUpdate
     )
       .then(numRowsAffected => {
