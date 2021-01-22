@@ -41,6 +41,11 @@ notesRouter
       newNote
     )
       .then(note => {
+        if (!note.name) {
+          res.status(400).json({error:{message: "Name is required!"}})
+        } else if (!note.content) {
+          res.status(400).json({error:{message:"Content is required!"}})
+        }
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${note.id}`))
