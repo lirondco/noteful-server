@@ -33,11 +33,16 @@ foldersRouter
       }
     }
 
-    FoldersService.insertFolder(
+   FoldersService.insertFolder(
       req.app.get('db'),
       newFolder
     )
       .then(folder => {
+        if(!folder.name) {
+          res
+            .status(400)
+            .json({ error: {message: 'Folder name is required!'} })
+        }
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${folder.id}`))
