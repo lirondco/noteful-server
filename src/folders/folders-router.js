@@ -25,8 +25,14 @@ foldersRouter
     const { name } = req.body
     const newFolder = { name }
 
+    if(!newFolder.name) {
+      return res.status(400).json({
+        error: { message: 'Folder name is required'}
+      })
+    }
+
     for (const [key, value] of Object.entries(newFolder)) {
-      if (value === null) {
+      if (value == null) {
         return res.status(400).json({
           error: { message: `Missing '${key}' in request body` }
         })
